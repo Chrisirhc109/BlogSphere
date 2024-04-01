@@ -4,7 +4,7 @@
         Google Graph
         @endsection
 
-        <h1 style="text-align: center;">User Creation by Month</h1>
+        <h1 style="text-align: center;">User Creation by Month testing</h1>
 
         <div id="piechart_3d" style="width: 1500px; height: 500px; margin: auto;"></div>
 
