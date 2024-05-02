@@ -15,7 +15,7 @@
 							<span class="menu-custom-icon d-flex flex-center flex-shrink-0 rounded w-40px h-40px me-3">{!! getIcon('element-11', 'text-primary fs-1') !!}</span>
 							<span class="d-flex flex-column">
 								<span class="fs-6 fw-bold text-gray-800">Default</span>
-								<span class="fs-7 fw-semibold text-muted">Reports & statistics</span>
+								<span class="fs-7 fw-semibold text-muted">Blog Post</span>
 							</span>
 						</a>
 						<!--end:Menu link-->

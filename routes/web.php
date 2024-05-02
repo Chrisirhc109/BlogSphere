@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\GraphController;
 use App\Http\Controllers\PDFController;
+use App\Http\Controllers\UserController;
 use App\Models\Post;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
@@ -10,7 +11,6 @@ use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\Apps\RoleManagementController;
 use App\Http\Controllers\Apps\UserManagementController;
 use App\Http\Controllers\Apps\PermissionManagementController;
-use mikehaertl\wkhtmlto\Pdf;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,21 +25,24 @@ use mikehaertl\wkhtmlto\Pdf;
 
 // Authenticated routes
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::post('/create-post',[PostController::class,'createPost']);
+    Route::get('/', [PostController::class, 'index'])->name('dashboard');
+
+    Route::post('/create-post',[PostController::class,'createPost'])->name('posts.store');
+
     Route::put('/edit-post/{post}', [PostController::class, 'update'])->name('posts.update');
+    
     Route::delete('/delete-post/{post}',[PostController::class,'deletePost']);
+
     Route::get('/search',[PostController::class,'search']);
 
+    //Profile
+    Route::get('/profile',[UserController::class,'profile'])->name('profile');
 
+    //Graphs
     Route::get('/graph',[GraphController::class,'linechart'])->name('line-graph.show');
-    
-    Route::get('/graphgoo',[GraphController::class,'barchartGOOGLE'])->name('google-graph.show');
 
-    Route::get('/ThreeD',[GraphController::class,'threeD'])->name('3d-graph.show');
-
-    Route::get('/Tigad',[GraphController::class,'Tigad'])->name('3d.show');
-
+    //Table
+    Route::get('/UserCreation',[GraphController::class,'userCreation'])->name('TableGraph.show');
 
     // User management routes
     Route::name('user-management.')->group(function () {
@@ -50,9 +53,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Catch-all route for the dashboard
     Route::get('/', function () {
-        $posts = auth()->user()->usersCoolPosts()->latest()->get();
+        $posts = Post::latest()->get();
         return view('pages.dashboards.index', ['posts' => $posts]);
     })->name('dashboard');
+    
 });
 
 // Error route

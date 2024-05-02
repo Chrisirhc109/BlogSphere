@@ -1,54 +1,132 @@
-<x-default-layout>
+<div id="graph">
 
-    <div id="graph">
-        @section('title')
-        Google Graph
-        @endsection
+    <h1 id="text-header" style="margin: auto; font-size: 24px; font-weight: bold;">User Creation by Month (2024)</h1>
+    
 
-        <h1 style="text-align: center;">User Creation by Month</h1>
 
-        <div id="piechart_3d" style="width: 1500px; height: 500px; margin: auto;"></div>
-
-        <div id="print-button-container" class="text-center mt-3">
-            <button  id="print-button" onclick="location.href='/Tigad'">Print</button>
-            
-        </div>
+    <div class="btn-group" style="margin-top: 30px">Change view:
+        <select id="select-option" class="form-select" name="dropdown" onchange="showContent()">
+            <option value="Graph">Graph(%)</option>
+            <option value="Table">Table(No.)</option>
+        </select>
     </div>
     
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    
 
-    <script type="text/javascript">
-        google.charts.load('current',{packages:['corechart']});
-        google.charts.setOnLoadCallback(drawChart);
+    <div id="graph-table-line-no-btn">
+        {{--Graphs--}}
+        <div style="margin-left:600px;">
+            <div id="piechart_3d" style="height:400px; width:600px"></div>
+        </div>
 
-        function drawChart()
+        {{--Table--}}
+        <div id="table" class="container" style="display: none;">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Month</th>
+                        <th>User Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($userCounts as $userCount)
+                        <tr>
+                            <td>{{ date('F', mktime(0, 0, 0, $userCount->month, 1)) }}</td>
+                            <td>{{ $userCount->count }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+
+
+
+    
+        <div id="print-button-container" style="position: absolute; bottom: 10%; left: 50%; right:0% ;">
+            
+            <button class="btn btn-primary" id="print-button-graph"  onclick="printDivs(['text-header','piechart_3d'])">Print Graph</button>
+            <button class="btn btn-primary" id="print-button-table"  style="display:none;" onclick="printDivs(['text-header','table'])">Print Table</button>
+        </div>
+    </div>
+</div>
+
+{{--3D CHART--}}
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+
+    google.charts.load('current',{packages:['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart()
         {
           var data = google.visualization.arrayToDataTable(@json($data3D));
 
           var options = {
             is3D: true, 
+            vAxis:{ format:'0'}
           };
 
           var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
           chart.draw(data,options);       
         }
 
-        // Hide the print button when the page is printed
-        window.onbeforeprint = function() {
-            document.getElementById('print-button-container').style.display = 'none';
-            document.getElementById('header-header').style.display = 'none';
-        };
+</script>
 
-        // Show the print button when exiting print preview
-        window.onafterprint = function() {
-            document.getElementById('print-button-container').style.display = 'block';
-            document.getElementById('header-header').style.display = 'block';
-        };
-    
-        // Functionality to print when the print button is clicked
-        document.getElementById('print-button').addEventListener('click', function() {
-            window.print();
+
+{{--REFRESH AFTER PREVIEW PRINT PAGE --}}
+<script>
+    // Show the print button when exiting print preview
+    window.onafterprint = function() {
+        location.reload(); // Reload the page
+    };
+</script>
+
+
+{{--IF ELSE SHOW/HIDE DROP DOWN--}}
+<script>
+    function showContent() {
+
+        var selectOption = document.getElementById("select-option").value;
+        var elements = ['piechart_3d', 'table','print-button-graph','print-button-table'];
+
+        elements.forEach(function(elemendId)
+        {
+            document.getElementById(elemendId).style.display = "none";
         });
-    </script>
 
-</x-default-layout>
+        if (selectOption === "Graph") 
+        {
+            document.getElementById("piechart_3d").style.display = "block";
+            // PRINT BUTTON
+            document.getElementById("print-button-graph").style.display = "block";
+        } 
+        else if (selectOption === "Table") 
+        {
+            document.getElementById("table").style.display = "block";
+            // PRINT BUTTON
+            document.getElementById("print-button-table").style.display = "block";
+        } 
+    }
+
+</script>
+
+{{--PRINT HTML--}}
+<script>
+    function printDivs(divIds)
+    {
+        var original = document.body.innerHTML;
+        var printContents = '';
+
+        divIds.forEach(function(divIds)
+    {
+
+        var divToPrint = document.getElementById(divIds);
+        printContents += divToPrint.innerHTML;
+
+    });
+
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = original;
+    }
+</script>

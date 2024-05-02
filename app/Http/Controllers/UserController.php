@@ -13,4 +13,9 @@ class UserController extends Controller
             'password'=>'required'
         ]);
     }
+
+    public function profile()
+    {
+        return view('partials.profile.profPage');
+    }
 }

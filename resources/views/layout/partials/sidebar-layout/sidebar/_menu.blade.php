@@ -5,8 +5,6 @@
 		<!--begin::Menu-->
 		<div class="menu menu-column menu-rounded menu-sub-indention px-3 fw-semibold fs-6" id="#kt_app_sidebar_menu" data-kt-menu="true" data-kt-menu-expand="false">
 			<!--begin:Menu item-->
-
-
 			
 			<div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('dashboard') ? 'here show' : '' }}">
 				<!--begin:Menu link-->
@@ -28,29 +26,44 @@
 							<span class="menu-bullet">
 								<span class="bullet bullet-dot"></span>
 							</span>
-							<span class="menu-title">Default</span>
+							<span class="menu-title">Blog Post</span>
 						</a>
 						<!--end:Menu link-->
+					</div>
+					<!--end:Menu item-->
+				</div>
+				<!--end:Menu sub-->
+			</div>
+			<!--end:Menu item-->
+
+
+			<div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('dashboard') ? 'here show' : '' }}">
+				<!--begin:Menu link-->
+				<span class="menu-link">
+					<span class="menu-icon">{!! getIcon('element-11', 'fs-2') !!}</span>
+					<span class="menu-title">Statistics</span>
+					<span class="menu-arrow"></span>
+				</span>
+				<!--end:Menu link-->
+
+
+				<!--begin:Menu sub-->
+				<div class="menu-sub menu-sub-accordion">
+					<!--begin:Menu item-->
+					<div class="menu-item">
 
 						<a class="menu-link {{ request()->routeIs('line-graph.show') ? 'active' : '' }}" href="{{ route('line-graph.show') }}">
 							<span class="menu-bullet">
 								<span class="bullet bullet-dot"></span>
 							</span>
-							<span class="menu-title">Line Graph</span>
+							<span class="menu-title">Post Created</span>
 						</a>
 
-						<a class="menu-link {{ request()->routeIs('google-graph.show') ? 'active' : '' }}" href="{{ route('google-graph.show') }}">
+						<a class="menu-link {{ request()->routeIs('TableGraph.show') ? 'active' : '' }}" href="{{ route('TableGraph.show') }}">
 							<span class="menu-bullet">
 								<span class="bullet bullet-dot"></span>
 							</span>
-							<span class="menu-title">Google Graph</span>	
-						</a>
-
-						<a class="menu-link {{ request()->routeIs('3d-graph.show') ? 'active' : '' }}" href="{{ route('3d-graph.show') }}">
-							<span class="menu-bullet">
-								<span class="bullet bullet-dot"></span>
-							</span>
-							<span class="menu-title">3d Graph</span>	
+							<span class="menu-title">User Creation</span>	
 						</a>
 
 
@@ -60,19 +73,6 @@
 				<!--end:Menu sub-->
 			</div>
 			<!--end:Menu item-->
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -138,6 +138,33 @@
 				<!--end:Menu sub-->
 			</div>
 			<!--end:Menu item-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 			<!--begin:Menu item-->
 			<div class="menu-item pt-5">
 				<!--begin:Menu content-->

@@ -8,7 +8,7 @@
         </div>
 
         <div id="print-button-container" class="text-center mt-3">
-            <button id="print-button" onclick="window-print();">Print</button>
+            <button id="print-button">Print</button>
         </div>
     </div>
     
@@ -36,20 +36,6 @@
 
             var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
             chart.draw(data, options);
-        }
-        function printGraph() {
-            // Hide other elements before printing
-            document.body.querySelectorAll('*:not(#chart_div)').forEach(function(element) {
-                element.style.display = 'none';
-            });
-
-            // Print only the content with ID 'graph-only'
-            window.print();
-
-            // Show hidden elements after printing
-            document.body.querySelectorAll('*:not(#chart_div)').forEach(function(element) {
-                element.style.display = 'block';
-            });
         }
     </script>
 

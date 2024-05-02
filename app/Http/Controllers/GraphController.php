@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Mpdf\Mpdf;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -28,8 +27,27 @@ class GraphController extends Controller
         return view("pages.dashboards.Line_Graph", ["labelsLine" => $labelsLine, "dataLine" => $dataLine, "colorsLine" => $colorsLine]);
     }
 
-    public function barchartGOOGLE()
+    public function userCreation()
     {
+        //3D CHART
+        $userCountsD = User::selectRaw('MONTH(created_at) as monthD, COUNT(*) as countD')
+        ->groupBy('monthD')
+        ->orderBy('monthD')
+        ->get();
+
+        $data3D = [['Month','Number of Users']];
+        foreach ($userCountsD as $UserCountsD){
+            $monthNama = date('F',mktime(0,0,0,$UserCountsD->monthD,1,0));
+            $data3D[] = [$monthNama,$UserCountsD->countD];
+        }  
+        
+        //TABLE
+        $userCounts = User::selectRaw('MONTH(created_at) as month, COUNT(*) as count')
+        ->groupBy('month')
+        ->orderBy('month','asc')
+        ->get();
+
+        //BAR CHART
         $userCountsGoo = User::selectRaw('MONTH(created_at) as monthGoogle, COUNT(*) as countGoogle')
         ->groupBy('monthGoogle')
         ->orderBy('monthGoogle')
@@ -41,39 +59,6 @@ class GraphController extends Controller
             $data[] = [$monthName,$UserCountsGoogle->countGoogle];
 
         }
-        return view("pages.dashboards.Google_chart", compact('data'));
+        return view('pages.dashboards.Three_D',compact('data3D','userCounts','data')); 
     }
-
-    public function threeD(){
-        $userCountsD = User::selectRaw('MONTH(created_at) as monthD, COUNT(*) as countD')
-        ->groupBy('monthD')
-        ->orderBy('monthD')
-        ->get();
-
-        $data3D = [['Month','Number of Users']];
-        foreach ($userCountsD as $UserCountsD){
-            $monthNama = date('F',mktime(0,0,0,$UserCountsD->monthD,1,0));
-            $data3D[] = [$monthNama,$UserCountsD->countD];
-
-        }
-        return view('pages.dashboards.Three_D',compact('data3D')); 
-    }
-    
-    public function Tigad()
-    {
-        $userCountsD = User::selectRaw('MONTH(created_at) as monthD, COUNT(*) as countD')
-        ->groupBy('monthD')
-        ->orderBy('monthD')
-        ->get();
-
-        $data3D = [['Month','Number of Users']];
-        foreach ($userCountsD as $UserCountsD){
-            $monthNama = date('F',mktime(0,0,0,$UserCountsD->monthD,1,0));
-            $data3D[] = [$monthNama,$UserCountsD->countD];
-
-        }
-        return view('partials.graphs.hehe',compact('data3D')); 
-    }
-
-
 }
