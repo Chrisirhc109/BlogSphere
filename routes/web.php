@@ -1,11 +1,12 @@
 <?php
 
-use App\Http\Controllers\GraphController;
-use App\Http\Controllers\PDFController;
-use App\Http\Controllers\UserController;
 use App\Models\Post;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PDFController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\GraphController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\Apps\RoleManagementController;
@@ -26,13 +27,10 @@ use App\Http\Controllers\Apps\PermissionManagementController;
 // Authenticated routes
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/', [PostController::class, 'index'])->name('dashboard');
-
-    Route::post('/create-post',[PostController::class,'createPost'])->name('posts.store');
-
-    Route::put('/edit-post/{post}', [PostController::class, 'update'])->name('posts.update');
     
+    Route::post('/create-post',[PostController::class,'createPost'])->name('posts.store');
+    Route::put('/edit-post/{post}', [PostController::class, 'update'])->name('posts.update');
     Route::delete('/delete-post/{post}',[PostController::class,'deletePost']);
-
     Route::get('/search',[PostController::class,'search']);
 
     //Profile
@@ -40,9 +38,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     //Graphs
     Route::get('/graph',[GraphController::class,'linechart'])->name('line-graph.show');
-
-    //Table
     Route::get('/UserCreation',[GraphController::class,'userCreation'])->name('TableGraph.show');
+
+    // Profile
+    Route::get('/profile', function () {
+        return view('partials.profile.profPage');
+    })->middleware('auth')->name('profile');
+
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/change-password', [ProfileController::class, 'changePassword'])->name('profile.changePassword');
 
     // User management routes
     Route::name('user-management.')->group(function () {
@@ -56,8 +61,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         $posts = Post::latest()->get();
         return view('pages.dashboards.index', ['posts' => $posts]);
     })->name('dashboard');
-    
 });
+
 
 // Error route
 Route::get('/error', function () {

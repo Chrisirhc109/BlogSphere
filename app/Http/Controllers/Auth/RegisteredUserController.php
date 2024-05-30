@@ -41,19 +41,18 @@ class RegisteredUserController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
-
+    
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'last_login_at' => \Illuminate\Support\Carbon::now()->toDateTimeString(),
+            'last_login_at' => Carbon::now()->toDateTimeString(),
             'last_login_ip' => $request->getClientIp()
         ]);
-
-        event(new Registered($user));
-
+    
         Auth::login($user);
-
-        return redirect(RouteServiceProvider::HOME);
+    
+        return redirect()->route('dashboard');
     }
+    
 }

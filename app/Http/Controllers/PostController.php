@@ -89,17 +89,27 @@ class PostController extends Controller
     public function search(Request $request)
     {
         $search = $request->search;
-
-        $posts = Post::where('title', 'like', "%$search%")
-                    ->orWhere('body','like',"%$search%")
-                    ->get();
-
+    
+        if ($search) {
+            $posts = Post::where('title', 'like', "%$search%")
+                        ->orWhere('body', 'like', "%$search%")
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+        } else {
+            // If no search term, fall back to default index behavior
+            return redirect()->route('dashboard');
+        }
+    
         return view('pages.dashboards.index', compact('posts', 'search'));
     }
-
+    
     public function index()
     {
+        // Retrieve posts from the database sorted by created_at in descending order
         $posts = Post::orderBy('created_at', 'desc')->get();
+        
+        // Pass the sorted posts data to the view
         return view('pages.dashboards.index', compact('posts'));
     }
+    
 }

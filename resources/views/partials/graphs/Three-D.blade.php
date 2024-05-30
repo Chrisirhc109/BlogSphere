@@ -1,25 +1,30 @@
-<div id="graph">
+<x-default-layout>
 
-    <h1 id="text-header" style="margin: auto; font-size: 24px; font-weight: bold;">User Creation by Month (2024)</h1>
-    
+<h1 id="text-header" style="font-size: 24px; font-weight: bold;">User Creation by Month (2024)</h1>
 
-
-    <div class="btn-group" style="margin-top: 30px">Change view:
-        <select id="select-option" class="form-select" name="dropdown" onchange="showContent()">
-            <option value="Graph">Graph(%)</option>
-            <option value="Table">Table(No.)</option>
-        </select>
+<div class="card text" style="width: 1000px">
+    <div class="card-header mt-10">
+        <ul class="nav nav-pills card-header-pills justify-content-center">
+            <li class="nav-item">
+                <a class="nav-link active" id="graph-tab" href="#" onclick="showContent('Graph')">Graph(%)</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="table-tab" href="#" onclick="showContent('Table')">Table(No.)</a>
+            </li>
+        </ul>
     </div>
     
-    
-
-    <div id="graph-table-line-no-btn">
-        {{--Graphs--}}
-        <div style="margin-left:600px;">
-            <div id="piechart_3d" style="height:400px; width:600px"></div>
+    <div class="card-body">
+        {{-- 3D CHART --}}
+        <div>
+            <div id="piechart_3d" class="card-title" style="height: 450px"></div>
         </div>
 
-        {{--Table--}}
+        <div style="margin-left: 10px">
+            <button class="btn btn-primary mt-5" id="print-button-graph" onclick="printDivs(['text-header','piechart_3d'])">Print Graph</button>
+        </div>
+
+        {{-- Table --}}
         <div id="table" class="container" style="display: none;">
             <table class="table table-bordered">
                 <thead>
@@ -38,95 +43,80 @@
                 </tbody>
             </table>
         </div>
-
-
-
-    
-        <div id="print-button-container" style="position: absolute; bottom: 10%; left: 50%; right:0% ;">
-            
-            <button class="btn btn-primary" id="print-button-graph"  onclick="printDivs(['text-header','piechart_3d'])">Print Graph</button>
-            <button class="btn btn-primary" id="print-button-table"  style="display:none;" onclick="printDivs(['text-header','table'])">Print Table</button>
+        <div style="margin-left: 10px">
+            <button class="btn btn-primary mt-5" id="print-button-table" style="display:none;" onclick="printDivs(['text-header','table'])">Print Table</button>
         </div>
     </div>
 </div>
+ 
+    
 
-{{--3D CHART--}}
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<script type="text/javascript">
+    {{-- 3D CHART --}}
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {packages: ['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
 
-    google.charts.load('current',{packages:['corechart']});
-    google.charts.setOnLoadCallback(drawChart);
-
-    function drawChart()
-        {
-          var data = google.visualization.arrayToDataTable(@json($data3D));
-
-          var options = {
-            is3D: true, 
-            vAxis:{ format:'0'}
-          };
-
-          var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
-          chart.draw(data,options);       
+        function drawChart() {
+            var data = google.visualization.arrayToDataTable(@json($data3D));
+            var options = {
+                is3D: true, 
+                vAxis: {format: '0'}
+            };
+            var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
+            chart.draw(data, options);
         }
+    </script>
 
-</script>
+    {{-- REFRESH AFTER PRINT PAGE --}}
+    <script>
+        window.onafterprint = function() {
+            location.reload(); // Reload the page
+        };
+    </script>
 
+    {{-- SHOW/HIDE DROP DOWN --}}
+    <script>
+        function showContent(view) {
+            var graph = document.getElementById('piechart_3d');
+            var table = document.getElementById('table');
+            var printGraphBtn = document.getElementById('print-button-graph');
+            var printTableBtn = document.getElementById('print-button-table');
+            var graphTab = document.getElementById('graph-tab');
+            var tableTab = document.getElementById('table-tab');
 
-{{--REFRESH AFTER PREVIEW PRINT PAGE --}}
-<script>
-    // Show the print button when exiting print preview
-    window.onafterprint = function() {
-        location.reload(); // Reload the page
-    };
-</script>
+            if (view === 'Graph') {
+                graph.style.display = 'block';
+                table.style.display = 'none';
+                printGraphBtn.style.display = 'block';
+                printTableBtn.style.display = 'none';
+                graphTab.classList.add('active');
+                tableTab.classList.remove('active');
+            } else {
+                graph.style.display = 'none';
+                table.style.display = 'block';
+                printGraphBtn.style.display = 'none';
+                printTableBtn.style.display = 'block';
+                graphTab.classList.remove('active');
+                tableTab.classList.add('active');
+            }
+        }
+    </script>
 
+    {{-- PRINT HTML --}}
+    <script>
+        function printDivs(divIds) {
+            var original = document.body.innerHTML;
+            var printContents = '';
 
-{{--IF ELSE SHOW/HIDE DROP DOWN--}}
-<script>
-    function showContent() {
+            divIds.forEach(function(divId) {
+                var divToPrint = document.getElementById(divId);
+                printContents += divToPrint.innerHTML;
+            });
 
-        var selectOption = document.getElementById("select-option").value;
-        var elements = ['piechart_3d', 'table','print-button-graph','print-button-table'];
-
-        elements.forEach(function(elemendId)
-        {
-            document.getElementById(elemendId).style.display = "none";
-        });
-
-        if (selectOption === "Graph") 
-        {
-            document.getElementById("piechart_3d").style.display = "block";
-            // PRINT BUTTON
-            document.getElementById("print-button-graph").style.display = "block";
-        } 
-        else if (selectOption === "Table") 
-        {
-            document.getElementById("table").style.display = "block";
-            // PRINT BUTTON
-            document.getElementById("print-button-table").style.display = "block";
-        } 
-    }
-
-</script>
-
-{{--PRINT HTML--}}
-<script>
-    function printDivs(divIds)
-    {
-        var original = document.body.innerHTML;
-        var printContents = '';
-
-        divIds.forEach(function(divIds)
-    {
-
-        var divToPrint = document.getElementById(divIds);
-        printContents += divToPrint.innerHTML;
-
-    });
-
-        document.body.innerHTML = printContents;
-        window.print();
-        document.body.innerHTML = original;
-    }
-</script>
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = original;
+        }
+    </script>
+</x-default-layout>
