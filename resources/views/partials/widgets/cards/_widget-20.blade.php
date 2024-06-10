@@ -1,7 +1,7 @@
-<div class="container d-flex justify-content-center align-items-center " style="margin-left: 25%">
-    <div class="col-12 col-md-10 col-lg-8">
+<div class="container d-flex justify-content-center align-items-center " style="margin-left: 25%;" >
+    <div class="col-12 col-md-10 col-lg-12">
         <!--begin::Card widget 20-->
-        <div class="card card-flush mb-2 mb-10" style="box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2); flex-shrink: 0;">
+        <div class="card card-flush mb-2 mb-10" style="box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2); flex-shrink: 0; ">
 
             <!--begin::Header-->
             <div class="card-body">
